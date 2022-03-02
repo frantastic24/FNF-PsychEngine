@@ -287,39 +287,39 @@ class Character extends FlxSprite
 				dance();
 			}
 
-			if (!isPlayer && !PlayState.opponentChart)
-			{
-				if (animation.curAnim.name.startsWith('sing'))
+			if (!isPlayer)
 				{
-					holdTimer += elapsed;
+					if (!PlayState.opponentChart) {
+						if (animation.curAnim.name.startsWith('sing'))
+						{
+							holdTimer += elapsed;
+						}
+	
+						if (holdTimer >= Conductor.stepCrochet * 0.001 * singDuration)
+						{
+							dance();
+							holdTimer = 0;
+						}
+					} else {
+						if (animation.curAnim.name.startsWith('sing'))
+						{
+							holdTimer += elapsed;
+						}
+						else
+							holdTimer = 0;
+	
+						if (animation.curAnim.name.endsWith('miss') && animation.curAnim.finished && !debugMode)
+							dance();
+					}
 				}
-
-				if (holdTimer >= Conductor.stepCrochet * 0.001 * singDuration)
+	
+				if(animation.curAnim.finished && animation.getByName(animation.curAnim.name + '-loop') != null)
 				{
-					dance();
-					holdTimer = 0;
+					playAnim(animation.curAnim.name + '-loop');
 				}
 			}
-			else if (PlayState.opponentChart)
-			{
-				if (animation.curAnim.name.startsWith('sing'))
-				{
-					holdTimer += elapsed;
-				}
-				else
-					holdTimer = 0;
-
-				if (animation.curAnim.name.endsWith('miss') && animation.curAnim.finished && !debugMode)
-					dance();
-			}
-
-			if(animation.curAnim.finished && animation.getByName(animation.curAnim.name + '-loop') != null)
-			{
-				playAnim(animation.curAnim.name + '-loop');
-			}
+			super.update(elapsed);
 		}
-		super.update(elapsed);
-	}
 
 	public var danced:Bool = false;
 
