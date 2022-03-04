@@ -305,9 +305,11 @@ class Character extends FlxSprite
 						{
 							holdTimer += elapsed;
 						}
-						else
-							holdTimer = 0;
-	
+						if (holdTimer >= Conductor.stepCrochet * 0.001 * singDuration)
+							{
+								dance();
+								holdTimer = 0;
+							}
 						if (animation.curAnim.name.endsWith('miss') && animation.curAnim.finished && !debugMode)
 							dance();
 					}
