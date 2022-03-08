@@ -3854,7 +3854,7 @@ class PlayState extends MusicBeatState
 			}
 
 			if(opponentChart) {
-				if(boyfriend != null){
+				if(boyfriend != null) {
 					boyfriend.playAnim(animToPlay, true);
 					boyfriend.holdTimer = 0;
 				}
@@ -3934,7 +3934,6 @@ class PlayState extends MusicBeatState
 
 			if(!note.noAnimation) {
 				var daAlt = '';
-				//var curSection:Int = Math.floor(curStep / 16);
 				if (curStep >= 0) if(SONG.notes[Math.floor(curStep / 16)].altAnim  && opponentChart || note.noteType == 'Alt Animation') daAlt = '-alt';
 				var animToPlay:String = singAnimations[Std.int(Math.abs(note.noteData))];
 
@@ -3943,7 +3942,7 @@ class PlayState extends MusicBeatState
 					if(note.gfNote) {
 						char = gf;
 					}
-					if(char != null){
+					if(char != null) {
 						char.playAnim(animToPlay + daAlt, true);
 						char.holdTimer = 0;
 					}
