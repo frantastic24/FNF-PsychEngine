@@ -3861,13 +3861,13 @@ class PlayState extends MusicBeatState
 			}
 
 			if(opponentChart) {
-				if(boyfriend != null) {
+				if(boyfriend != null && !boyfriend.specialAnim) {
 					boyfriend.playAnim(animToPlay, true);
 					boyfriend.holdTimer = 0;
 				}
 			}
 			else {
-				if(char != null)
+				if(char != null && !char.specialAnim)
 				{
 					char.playAnim(animToPlay, true);
 					char.holdTimer = 0;
@@ -3949,7 +3949,7 @@ class PlayState extends MusicBeatState
 					if(note.gfNote) {
 						char = gf;
 					}
-					if(char != null) {
+					if(char != null && !char.specialAnim) {
 						char.playAnim(animToPlay + daAlt, true);
 						char.holdTimer = 0;
 					}
