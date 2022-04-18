@@ -4246,26 +4246,7 @@ class PlayState extends MusicBeatState
 		lastStepHit = curStep;
 		setOnLuas('curStep', curStep);
 		callOnLuas('onStepHit', []);
-
-		if (SONG.notes[Math.floor(curStep / 16)] != null)
-			{
-				if (SONG.notes[Math.floor(curStep / 16)].changeBPM)
-				{
-					Conductor.changeBPM(SONG.notes[Math.floor(curStep / 16)].bpm);
-					//FlxG.log.add('CHANGED BPM!');
-					setOnLuas('curBpm', Conductor.bpm);
-					setOnLuas('crochet', Conductor.crochet);
-					setOnLuas('stepCrochet', Conductor.stepCrochet);
-				}
-				setOnLuas('mustHitSection', SONG.notes[Math.floor(curStep / 16)].mustHitSection);
-				setOnLuas('altAnim', SONG.notes[Math.floor(curStep / 16)].altAnim);
-				setOnLuas('gfSection', SONG.notes[Math.floor(curStep / 16)].gfSection);
-				// else
-				// Conductor.changeBPM(SONG.bpm);
-			}
 	}
-
-	
 
 	var lightningStrikeBeat:Int = 0;
 	var lightningOffset:Int = 8;
@@ -4289,7 +4270,7 @@ class PlayState extends MusicBeatState
 			notes.sort(FlxSort.byY, ClientPrefs.downScroll ? FlxSort.ASCENDING : FlxSort.DESCENDING);
 		}
 
-		/* if (SONG.notes[Math.floor(curStep / 16)] != null)
+		if (SONG.notes[Math.floor(curStep / 16)] != null)
 		{
 			if (SONG.notes[Math.floor(curStep / 16)].changeBPM)
 			{
@@ -4304,7 +4285,7 @@ class PlayState extends MusicBeatState
 			setOnLuas('gfSection', SONG.notes[Math.floor(curStep / 16)].gfSection);
 			// else
 			// Conductor.changeBPM(SONG.bpm);
-		} */
+		}
 		// FlxG.log.add('change bpm' + SONG.notes[Std.int(curStep / 16)].changeBPM);
 
 		if (generatedMusic && PlayState.SONG.notes[Std.int(curStep / 16)] != null && !endingSong && !isCameraOnForcedPos)

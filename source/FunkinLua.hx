@@ -135,7 +135,8 @@ class FunkinLua {
 		set('version', MainMenuState.psychEngineVersion.trim());
 		
 		set('inGameOver', false);
-		set('mustHitSection', false);
+		// set('mustHitSection', false);
+		set('mustHitSection', PlayState.SONG.notes[0].mustHitSection);
 		set('altAnim', false);
 		set('gfSection', false);
 
@@ -303,7 +304,7 @@ class FunkinLua {
 		Lua_helper.add_callback(lua, "changeIcon", function(char:String, icon:String) {
 			switch(char){
 				case 'dad' | 'opponent':
-					PlayState.instance.iconP2.changeIcon(icon);
+						PlayState.instance.iconP2.changeIcon(icon);
 				default:
 					PlayState.instance.iconP1.changeIcon(icon);
 			}
@@ -318,9 +319,17 @@ class FunkinLua {
 
 			switch(char){
 				case 'dad' | 'opponent':
-					PlayState.instance.healthBar.createColoredEmptyBar(FlxColor.fromRGB(ass[0], ass[1], ass[2]));
+					if(!PlayState.opponentChart){
+						PlayState.instance.healthBar.createColoredEmptyBar(FlxColor.fromRGB(ass[0], ass[1], ass[2]));
+					} else {
+						PlayState.instance.healthBar.createColoredFilledBar(FlxColor.fromRGB(ass[0], ass[1], ass[2]));
+					}
 				default:
-					PlayState.instance.healthBar.createColoredFilledBar(FlxColor.fromRGB(ass[0], ass[1], ass[2]));
+					if(!PlayState.opponentChart){
+						PlayState.instance.healthBar.createColoredFilledBar(FlxColor.fromRGB(ass[0], ass[1], ass[2]));
+					} else {
+						PlayState.instance.healthBar.createColoredEmptyBar(FlxColor.fromRGB(ass[0], ass[1], ass[2]));
+					}
 			}
 			PlayState.instance.healthBar.updateBar();
 		});
@@ -339,9 +348,17 @@ class FunkinLua {
 			var leGradient:Array<FlxColor> = [FlxColor.fromRGB(ass[0], ass[1], ass[2]), FlxColor.fromRGB(ass[3], ass[4], ass[5])];
 			switch(char){
 				case 'dad' | 'opponent':
-					PlayState.instance.healthBar.createGradientEmptyBar(leGradient, chunk, rotation);
+					if(!PlayState.opponentChart){
+						PlayState.instance.healthBar.createGradientEmptyBar(leGradient, chunk, rotation);
+					} else {
+						PlayState.instance.healthBar.createGradientFilledBar(leGradient, chunk, rotation);
+					}
 				default:
-					PlayState.instance.healthBar.createGradientFilledBar(leGradient, chunk, rotation);
+					if(!PlayState.opponentChart){
+						PlayState.instance.healthBar.createGradientFilledBar(leGradient, chunk, rotation);
+					} else {
+						PlayState.instance.healthBar.createGradientEmptyBar(leGradient, chunk, rotation);
+					}
 			}
 			PlayState.instance.healthBar.updateBar();
 		});
