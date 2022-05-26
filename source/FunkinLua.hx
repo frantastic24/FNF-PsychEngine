@@ -1399,19 +1399,19 @@ class FunkinLua {
 		Lua_helper.add_callback(lua, "playMusic", function(sound:String, volume:Float = 1, loop:Bool = false) {
 			FlxG.sound.playMusic(Paths.music(sound), volume, loop);
 		});
-		Lua_helper.add_callback(lua, "playSound", function(sound:String, volume:Float = 1, ?loop:Bool = false,?tag:String = null) {
+		Lua_helper.add_callback(lua, "playSound", function(sound:String, volume:Float = 1,?tag:String = null) {
 			if(tag != null && tag.length > 0) {
 				tag = tag.replace('.', '');
 				if(PlayState.instance.modchartSounds.exists(tag)) {
 					PlayState.instance.modchartSounds.get(tag).stop();
 				}
-				PlayState.instance.modchartSounds.set(tag, FlxG.sound.play(Paths.sound(sound), volume, loop, function() {
+				PlayState.instance.modchartSounds.set(tag, FlxG.sound.play(Paths.sound(sound), volume, false, function() {
 					PlayState.instance.modchartSounds.remove(tag);
 					PlayState.instance.callOnLuas('onSoundFinished', [tag]);
 				}));
 				return;
 			}
-			FlxG.sound.play(Paths.sound(sound), volume, loop);
+			FlxG.sound.play(Paths.sound(sound), volume);
 		});
 		Lua_helper.add_callback(lua, "stopSound", function(tag:String) {
 			if(tag != null && tag.length > 1 && PlayState.instance.modchartSounds.exists(tag)) {
