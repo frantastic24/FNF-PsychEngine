@@ -681,9 +681,10 @@ class FunkinLua {
 		});
 
 		Lua_helper.add_callback(lua, "getTweenPercent", function(tag:String) {
-			if(PlayState.instance.modchartTween.exists(tag)) {
+			if(PlayState.instance.modchartTweens.exists(tag)) {
 					return PlayState.instance.modchartTweens.get(tag).percent;
 			}
+			return 0;
 		});
 
 		Lua_helper.add_callback(lua, "cancelTween", function(tag:String) {
