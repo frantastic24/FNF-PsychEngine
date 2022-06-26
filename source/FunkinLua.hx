@@ -2804,6 +2804,7 @@ class FunkinLua {
 					return conv;
 				}
 			}
+			Lua.pop(lua, 1);
 		}
 		catch (e:Dynamic) {
 			trace(e);
