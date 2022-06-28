@@ -698,15 +698,6 @@ class FunkinLua {
 			}
 		});
 
-		Lua_helper.add_callback(lua, "changeIcon", function(char:String, icon:String) {
-			switch(char){
-				case 'dad' | 'opponent':
-						PlayState.instance.iconP2.changeIcon(icon);
-				default:
-					PlayState.instance.iconP1.changeIcon(icon);
-			}
-		});
-
 		Lua_helper.add_callback(lua, "changeHealthColor", function(char:String, color:String) {
 			var bitch:Array<String> = color.split(',');
 			var ass:Array<Int> = [];
