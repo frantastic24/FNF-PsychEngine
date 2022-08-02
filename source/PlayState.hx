@@ -4422,7 +4422,7 @@ class PlayState extends MusicBeatState
 			{
 				boyfriend.dance();
 
-			if (controlHoldArray.contains(true) && !endingSong && opponentChart) {/*bruh*/} else if (dad.holdTimer > Conductor.stepCrochet * 0.0011 * dad.singDuration && dad.animation.curAnim.name.startsWith('sing')
+			if (parsedHoldArray.contains(true) && !endingSong && opponentChart) {/*bruh*/} else if (dad.holdTimer > Conductor.stepCrochet * 0.0011 * dad.singDuration && dad.animation.curAnim.name.startsWith('sing')
 && !dad.animation.curAnim.name.endsWith('miss'))
 				dad.dance();
 				//boyfriend.animation.curAnim.finish();
