@@ -198,7 +198,6 @@ class PlayState extends MusicBeatState
 	public var cpuControlled:Bool = false;
 	public var practiceMode:Bool = false;
 	public static var opponentChart:Bool = false;
-	public var noteHitFix:Bool = true;
 
 	public var botplaySine:Float = 0;
 	public var botplayTxt:FlxText;
@@ -372,7 +371,6 @@ class PlayState extends MusicBeatState
 		practiceMode = ClientPrefs.getGameplaySetting('practice', false);
 		cpuControlled = ClientPrefs.getGameplaySetting('botplay', false);
 		opponentChart = ClientPrefs.getGameplaySetting('opponentplay', false);
-		noteHitFix = opponentChart;
 
 		// var gameCam:FlxCamera = FlxG.camera;
 		camGame = new FlxCamera();
