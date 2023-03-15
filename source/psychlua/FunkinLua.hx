@@ -1639,26 +1639,6 @@ class FunkinLua {
 			PlayState.instance.modchartSprites.set(tag, leSprite);
 			leSprite.active = true;
 		});
-		Lua_helper.add_callback(lua, "addCharacterTrail", function(target:String, length:Int = 4, delay:Int = 24, alpha:Float = 0.3, diff:Float = 0.069) {
-			switch(target.toLowerCase()) {
-				case 'dad' | 'opponent':
-                    var trail = new FlxTrail(PlayState.instance.dad, null, length, delay, alpha, diff);
-					if(PlayState.instance.dad != null) PlayState.instance.insert(PlayState.instance.members.indexOf(PlayState.instance.dadGroup) - 1, trail);
-				case 'gf' | 'girlfriend':
-					var trail = new FlxTrail(PlayState.instance.gf, null, length, delay, alpha, diff);
-					if(PlayState.instance.gf != null) PlayState.instance.insert(PlayState.instance.members.indexOf(PlayState.instance.gfGroup) - 1, trail);
-				default:
-                     var trail = new FlxTrail(PlayState.instance.boyfriend, null, length, delay, alpha, diff);
-					if(PlayState.instance.boyfriend != null) PlayState.instance.insert(PlayState.instance.members.indexOf(PlayState.instance.boyfriendGroup) - 1, trail);
-			}
-		});
-		Lua_helper.add_callback(lua, "addSpriteTrail", function(obj:String, length:Int = 4, delay:Int = 24, alpha:Float = 0.3, diff:Float = 0.069) {
-			var object:ModchartSprite = PlayState.instance.modchartSprites.get(obj);
-			if(object != null) {
-				var trail = new FlxTrail(PlayState.instance.modchartSprites.get(obj), null, length, delay, alpha, diff);
-				getInstance().insert(getInstance().members.indexOf(PlayState.instance.modchartSprites.get(obj)) - 1, trail);
-			}
-		});
 		Lua_helper.add_callback(lua, "makeAnimatedLuaSprite", function(tag:String, image:String, x:Float, y:Float, ?spriteType:String = "sparrow") {
 			tag = tag.replace('.', '');
 			LuaUtils.resetSpriteTag(tag);
@@ -1909,31 +1889,6 @@ class FunkinLua {
 				pee.destroy();
 				PlayState.instance.modchartSprites.remove(tag);
 			}
-		});
-
-		Lua_helper.add_callback(lua, "setColorSwap", function(obj:String, hue:Float = 0, saturation:Float = 0, brightness:Float = 0) {
-			var real = PlayState.instance.getLuaObject(obj);
-			var color:ColorSwap = new ColorSwap();
-			color.hue = hue;
-			color.saturation = saturation;
-			color.brightness = brightness;
-			if(real!=null) {
-				real.shader = color.shader;
-				return true;
-			}
-
-			var killMe:Array<String> = obj.split('.');
-			var object:FlxSprite = getObjectDirectly(killMe[0]);
-			if(killMe.length > 1) {
-				object = getVarInArray(getPropertyLoopThingWhatever(killMe), killMe[killMe.length-1]);
-			}
-
-			if(object != null) {
-				object.shader = color.shader;
-				return true;
-			}
-			luaTrace("Object " + obj + " doesn't exist!", false, false, FlxColor.RED);
-			return false;
 		});
 
 		Lua_helper.add_callback(lua, "luaSpriteExists", function(tag:String) {
