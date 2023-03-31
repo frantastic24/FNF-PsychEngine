@@ -4325,10 +4325,8 @@ class PlayState extends MusicBeatState
 		RecalculateRating(true);
 
 		var char:Character = boyfriend;
-		if(daNote.gfNote) {
-			char = gf;
-		}
 		if (opponentChart) char = dad;
+		if(daNote.gfNote) char = gf;
 
 		if(char != null && !daNote.noMissAnimation && char.hasMissAnimations)
 		{
@@ -4408,24 +4406,15 @@ class PlayState extends MusicBeatState
 			
 
 			var char:Character = dad;
+			if(opponentChart) char = boyfriend;
+			if(note.gfNote) char = gf;
 			var animToPlay:String = singAnimations[Std.int(Math.abs(note.noteData))] + altAnim;
-			if(note.gfNote) {
-				char = gf;
-			}
 
-			if(opponentChart) {
-				if(boyfriend != null && !boyfriend.specialAnim) {
-					boyfriend.playAnim(animToPlay, true);
-					boyfriend.holdTimer = 0;
-				}
-			}
-			else {
-				if(char != null && !char.specialAnim)
+			if(char != null && !char.specialAnim)
 				{
 					char.playAnim(animToPlay, true);
 					char.holdTimer = 0;
 				}
-			}
 		}
 
 		if (SONG.needsVoices)
