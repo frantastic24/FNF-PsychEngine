@@ -1,17 +1,12 @@
 package cutscenes;
 
-
 import haxe.Json;
-import haxe.format.JsonParser;
 
 #if sys
 import sys.FileSystem;
 import sys.io.File;
-#else
-import lime.utils.Assets;
 #end
-
-using StringTools;
+import lime.utils.Assets;
 
 typedef DialogueAnimArray = {
 	var anim:String;

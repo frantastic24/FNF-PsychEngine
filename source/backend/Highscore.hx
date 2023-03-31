@@ -1,9 +1,5 @@
 package backend;
 
-
-
-using StringTools;
-
 class Highscore
 {
 	#if (haxe >= "4.0.0")
@@ -15,7 +11,6 @@ class Highscore
 	public static var songScores:Map<String, Int> = new Map<String, Int>();
 	public static var songRating:Map<String, Float> = new Map<String, Float>();
 	#end
-
 
 	public static function resetSong(song:String, diff:Int = 0):Void
 	{
@@ -103,7 +98,7 @@ class Highscore
 
 	public static function formatSong(song:String, diff:Int):String
 	{
-		return Paths.formatToSongPath(song) + CoolUtil.getDifficultyFilePath(diff);
+		return Paths.formatToSongPath(song) + Difficulty.getFilePath(diff);
 	}
 
 	public static function getScore(song:String, diff:Int):Int
