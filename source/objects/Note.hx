@@ -2,6 +2,8 @@ package objects;
 
 import states.editors.ChartingState;
 
+import flixel.math.FlxRect;
+
 import shaders.ColorSwap;
 
 typedef EventNote = {
@@ -369,5 +371,16 @@ class Note extends FlxSprite
 			if (alpha > 0.3)
 				alpha = 0.3;
 		}
+	}
+
+	@:noCompletion
+	override function set_clipRect(rect:FlxRect):FlxRect
+	{
+		clipRect = rect;
+
+		if (frames != null)
+			frame = frames.frames[animation.frameIndex];
+
+		return rect;
 	}
 }
