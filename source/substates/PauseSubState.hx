@@ -5,7 +5,6 @@ import backend.Highscore;
 import backend.Song;
 
 import flixel.addons.transition.FlxTransitionableState;
-import flixel.system.FlxSound;
 
 import flixel.util.FlxStringUtil;
 
@@ -246,10 +245,11 @@ class PauseSubState extends MusicBeatSubstate
 					PlayState.instance.botplayTxt.alpha = 1;
 					PlayState.instance.botplaySine = 0;
 				case "Exit to menu":
+					#if desktop DiscordClient.resetClientID(); #end
 					PlayState.deathCounter = 0;
 					PlayState.seenCutscene = false;
 
-					WeekData.loadTheFirstEnabledMod();
+					Mods.loadTheFirstEnabledMod();
 					if(PlayState.isStoryMode) {
 						MusicBeatState.switchState(new StoryMenuState());
 					} else {
@@ -259,6 +259,7 @@ class PauseSubState extends MusicBeatSubstate
 					FlxG.sound.playMusic(Paths.music('freakyMenu'));
 					PlayState.changedDifficulty = false;
 					PlayState.chartingMode = false;
+					FlxG.camera.followLerp = 0;
 			}
 		}
 	}

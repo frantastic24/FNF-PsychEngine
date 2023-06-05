@@ -1,7 +1,13 @@
 
+//Discord API
 #if desktop
 import backend.Discord;
 #end
+
+//Psych
+#if !macro import Paths; #end
+#if MODS_ALLOWED import backend.Mods; #end
+
 import backend.MusicBeatState;
 import backend.MusicBeatSubstate;
 import backend.CustomFadeTransition;
@@ -15,6 +21,12 @@ import objects.BGSprite;
 import states.PlayState;
 import states.LoadingState;
 
+//Flixel
+#if (flixel >= "5.3.0")
+import flixel.sound.FlxSound;
+#else
+import flixel.system.FlxSound;
+#end
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.FlxCamera;
