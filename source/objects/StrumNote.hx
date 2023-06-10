@@ -65,7 +65,6 @@ class StrumNote extends FlxSprite
 			frames = Paths.getSparrowAtlas(texture);
 			animation.addByPrefix(colArray[noteData], 'arrow' + dirArray[noteData]);
 
-			antialiasing = ClientPrefs.data.antialiasing;
 			setGraphicSize(Std.int(width * 0.7));
 
 			animation.addByPrefix('static', 'arrow' + dirArray[noteData]);
