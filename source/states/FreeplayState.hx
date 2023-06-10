@@ -94,7 +94,7 @@ class FreeplayState extends MusicBeatState
 
 		for (i in 0...songs.length)
 		{
-			Paths.currentModDirectory = songs[i].folder;
+			Mods.currentModDirectory = songs[i].folder;
 			var songText:Alphabet = new Alphabet(90, 320, songs[i].songName, true);
 			songText.targetY = i;
 			grpSongs.add(songText);
