@@ -902,59 +902,6 @@ class FunkinLua {
 				LuaUtils.loadFrames(spr, image, spriteType);
 			}
 		});
-
-		Lua_helper.add_callback(lua, "changeHealthColor", function(char:String, color:String) {
-			var bitch:Array<String> = color.split(',');
-			var ass:Array<Int> = [];
-			for (i in 0...bitch.length) {
-				ass.push(Std.parseInt(bitch[i]));
-			}
-
-			switch(char){
-				case 'dad' | 'opponent':
-					if(!PlayState.opponentChart){
-						PlayState.instance.healthBar.createColoredEmptyBar(FlxColor.fromRGB(ass[0], ass[1], ass[2]));
-					} else {
-						PlayState.instance.healthBar.createColoredFilledBar(FlxColor.fromRGB(ass[0], ass[1], ass[2]));
-					}
-				default:
-					if(!PlayState.opponentChart){
-						PlayState.instance.healthBar.createColoredFilledBar(FlxColor.fromRGB(ass[0], ass[1], ass[2]));
-					} else {
-						PlayState.instance.healthBar.createColoredEmptyBar(FlxColor.fromRGB(ass[0], ass[1], ass[2]));
-					}
-			}
-			PlayState.instance.healthBar.updateBar();
-		});
-
-		Lua_helper.add_callback(lua, "createGradientHealth", function(char:String, color1:String, color2:String, chunk:Int = 1, rotation:Int = 180) {
-			var bitch:Array<String> = color1.split(',');
-			var cock:Array<String> = color2.split(',');
-			var ass:Array<Int> = [];
-			for (i in 0...bitch.length) {
-				ass.push(Std.parseInt(bitch[i]));
-			}
-			for (i in 0...cock.length) {
-				ass.push(Std.parseInt(cock[i]));
-			}
-
-			var leGradient:Array<FlxColor> = [FlxColor.fromRGB(ass[0], ass[1], ass[2]), FlxColor.fromRGB(ass[3], ass[4], ass[5])];
-			switch(char){
-				case 'dad' | 'opponent':
-					if(!PlayState.opponentChart){
-						PlayState.instance.healthBar.createGradientEmptyBar(leGradient, chunk, rotation);
-					} else {
-						PlayState.instance.healthBar.createGradientFilledBar(leGradient, chunk, rotation);
-					}
-				default:
-					if(!PlayState.opponentChart){
-						PlayState.instance.healthBar.createGradientFilledBar(leGradient, chunk, rotation);
-					} else {
-						PlayState.instance.healthBar.createGradientEmptyBar(leGradient, chunk, rotation);
-					}
-			}
-			PlayState.instance.healthBar.updateBar();
-		});
 		
 		Lua_helper.add_callback(lua, "getProperty", function(variable:String) {
 			var result:Dynamic = null;

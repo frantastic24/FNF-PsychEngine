@@ -14,6 +14,7 @@ class BackgroundGirls extends FlxSprite
 		setGraphicSize(Std.int(width * PlayState.daPixelZoom));
 		updateHitbox();
 		animation.play('danceLeft');
+		antialiasing = false;
 	}
 
 	var danceDir:Bool = false;
