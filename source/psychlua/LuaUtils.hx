@@ -1,19 +1,13 @@
 package psychlua;
 
 import backend.WeekData;
+import objects.Character;
 
 import openfl.display.BlendMode;
 import animateatlas.AtlasFrameMaker;
 import Type.ValueType;
 
 import substates.GameOverSubstate;
-
-#if LUA_ALLOWED
-import llua.Lua;
-import llua.LuaL;
-import llua.State;
-import llua.Convert;
-#end
 
 typedef LuaTweenOptions = {
 	type:FlxTweenType,
@@ -65,17 +59,19 @@ class LuaUtils
 			}
 			return target;
 		}
-		/*if(Std.isOfType(instance, Map))
-			instance.set(variable,value);
-		else*/
-			
-		if(PlayState.instance.variables.exists(variable))
-		{
-			PlayState.instance.variables.set(variable, value);
-			return true;
-		}
 
-		Reflect.setProperty(instance, variable, value);
+		if(/*Std.isOfType(instance, Map)*/ instance.keyValueIterator != null) //cheaper way to get a map but less safe
+			instance.set(variable,value);
+		else
+		{
+			if(PlayState.instance.variables.exists(variable))
+			{
+				PlayState.instance.variables.set(variable, value);
+				return true;
+			}
+
+			Reflect.setProperty(instance, variable, value);
+		}
 		return true;
 	}
 	public static function getVarInArray(instance:Dynamic, variable:String):Any
@@ -100,6 +96,9 @@ class LuaUtils
 			}
 			return target;
 		}
+
+		if(/*Std.isOfType(instance, Map)*/ instance.keyValueIterator != null) //cheaper way to get a map but less safe
+			return instance.get(variable);
 
 		if(PlayState.instance.variables.exists(variable))
 		{
@@ -188,6 +187,27 @@ class LuaUtils
 	public static inline function getTargetInstance()
 	{
 		return PlayState.instance.isDead ? GameOverSubstate.instance : PlayState.instance;
+	}
+
+	public static inline function getLowestCharacterGroup():FlxSpriteGroup
+	{
+		var group:FlxSpriteGroup = PlayState.instance.gfGroup;
+		var pos:Int = PlayState.instance.members.indexOf(group);
+
+		var newPos:Int = PlayState.instance.members.indexOf(PlayState.instance.boyfriendGroup);
+		if(newPos < pos)
+		{
+			group = PlayState.instance.boyfriendGroup;
+			pos = newPos;
+		}
+		
+		newPos = PlayState.instance.members.indexOf(PlayState.instance.dadGroup);
+		if(newPos < pos)
+		{
+			group = PlayState.instance.dadGroup;
+			pos = newPos;
+		}
+		return group;
 	}
 	
 	public static function addAnimByIndices(obj:String, name:String, prefix:String, indices:Any = null, framerate:Int = 24, loop:Bool = false)
