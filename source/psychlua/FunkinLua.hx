@@ -60,7 +60,7 @@ class FunkinLua {
 	public var closed:Bool = false;
 
 	#if hscript
-	public static var hscript:HScript = null;
+	public var hscript:HScript = null;
 	#end
 	
 	public function new(scriptName:String) {
@@ -83,7 +83,7 @@ class FunkinLua {
 				#if windows
 				lime.app.Application.current.window.alert(resultStr, 'Error on lua script!');
 				#else
-				luaTrace('$script\n$resultStr', true, false, FlxColor.RED);
+				luaTrace('$scriptName\n$resultStr', true, false, FlxColor.RED);
 				#end
 				lua = null;
 				return;
@@ -1295,7 +1295,7 @@ class FunkinLua {
 		Lua_helper.add_callback(lua, "triggerEvent", function(name:String, arg1:Dynamic, arg2:Dynamic) {
 			var value1:String = arg1;
 			var value2:String = arg2;
-			PlayState.instance.triggerEventNote(name, value1, value2, Conductor.songPosition);
+			PlayState.instance.triggerEvent(name, value1, value2, Conductor.songPosition);
 			//trace('Triggered event: ' + name + ', ' + value1 + ', ' + value2);
 			return true;
 		});
@@ -1339,7 +1339,7 @@ class FunkinLua {
 			PlayState.chartingMode = false;
 			PlayState.instance.transitioning = true;
 			FlxG.camera.followLerp = 0;
-			Mods.loadTheFirstEnabledMod();
+			Mods.loadTopMod();
 			return true;
 		});
 		Lua_helper.add_callback(lua, "getSongPosition", function() {
@@ -2214,6 +2214,9 @@ class FunkinLua {
 
 		Lua.close(lua);
 		lua = null;
+		#if hscript
+		hscript = null;
+		#end
 		#end
 	}
 

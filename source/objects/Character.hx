@@ -10,7 +10,7 @@ import sys.FileSystem;
 #end
 import openfl.utils.AssetType;
 import openfl.utils.Assets;
-import haxe.Json;
+import tjson.TJSON as Json;
 
 import backend.Song;
 import backend.Section;
@@ -230,12 +230,18 @@ class Character extends FlxSprite
 					}
 					heyTimer = 0;
 				}
-			} else if(specialAnim && animation.curAnim.finished)
+			}
+			else if(specialAnim && animation.curAnim.finished)
 			{
 				specialAnim = false;
 				dance();
 			}
-			
+			else if (animation.curAnim.name.endsWith('miss') && animation.curAnim.finished)
+			{
+				dance();
+				animation.finish();
+			}
+
 			switch(curCharacter)
 			{
 				case 'pico-speaker':
