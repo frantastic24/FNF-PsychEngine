@@ -84,7 +84,6 @@ class FunkinLua {
 			trace(e);
 			return;
 		}
-		#if hscript HScript.initHaxeModule(this); #end
 
 		var game:PlayState = PlayState.instance;
 		game.luaArray.push(this);
@@ -456,7 +455,7 @@ class FunkinLua {
 			return runningScripts;
 		});
 		
-		addLocalCallback("setOnLuas", function(varName:String, arg:Dynamic, ?ignoreSelf:Bool = true, ?exclusions:Array<String> = null) {
+		addLocalCallback("setOnLuas", function(varName:String, arg:Dynamic, ?ignoreSelf:Bool = false, ?exclusions:Array<String> = null) {
 			if(exclusions == null) exclusions = [];
 			if(ignoreSelf && !exclusions.contains(scriptName)) exclusions.push(scriptName);
 			game.setOnLuas(varName, arg, exclusions);
@@ -1632,8 +1631,10 @@ class FunkinLua {
 			luaTrace('' + text1 + text2 + text3 + text4 + text5, true, false);
 		});
 		
-		Lua_helper.add_callback(lua, "close", function() {
+		addLocalCallback("close", function() {
+			PlayState.instance.luaArray.remove(this);
 			closed = true;
+			trace('Closing script $scriptName');
 			return closed;
 		});
 
@@ -1849,7 +1850,7 @@ class FunkinLua {
 			var result:Dynamic = cast Convert.fromLua(lua, -1);
 			if (result == null) result = Function_Continue;
 
-			Lua.pop(lua, 1);
+			if(!closed) Lua.pop(lua, 1);
 			return result;
 		}
 		catch (e:Dynamic) {
@@ -1879,6 +1880,7 @@ class FunkinLua {
 		Lua.close(lua);
 		lua = null;
 		#if hscript
+		if(hscript != null) hscript.interp = null;
 		hscript = null;
 		#end
 		#end
