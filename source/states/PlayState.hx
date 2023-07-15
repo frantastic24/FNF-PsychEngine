@@ -2769,6 +2769,7 @@ class PlayState extends MusicBeatState
 			camZooming = true;
 
 		var char:Character = opponentChart ? boyfriend : dad;
+		if(note.gfNote) char = gf;
 		if(note.noteType == 'Hey!' && char.animOffsets.exists('hey')) {
 			char.playAnim('hey', true);
 			char.specialAnim = true;
