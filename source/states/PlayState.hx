@@ -125,7 +125,13 @@ class PlayState extends MusicBeatState
 	public var dadGroup:FlxSpriteGroup;
 	public var gfGroup:FlxSpriteGroup;
 	public static var curStage:String = '';
-	public static var isPixelStage:Bool = false;
+	public static var stageUI:String = "normal";
+	public static var isPixelStage(get, never):Bool;
+
+	@:noCompletion
+	static function get_isPixelStage():Bool
+		return stageUI == "pixel";
+
 	public static var SONG:SwagSong = null;
 	public static var isStoryMode:Bool = false;
 	public static var storyWeek:Int = 0;
@@ -243,13 +249,6 @@ class PlayState extends MusicBeatState
 	// Less laggy controls
 	private var keysArray:Array<String>;
 
-	// stores the last judgement object
-	var lastRating:FlxSprite;
-	// stores the last combo sprite object
-	var lastCombo:FlxSprite;
-	// stores the last combo score objects in an array
-	var lastScore:Array<FlxSprite> = [];
-
 	public var precacheList:Map<String, String> = new Map<String, String>();
 	public var songName:String;
 
@@ -340,7 +339,15 @@ class PlayState extends MusicBeatState
 		}
 
 		defaultCamZoom = stageData.defaultZoom;
-		isPixelStage = !!stageData.isPixelStage;
+
+		stageUI = "normal";
+		if (stageData.stageUI != null)
+			stageUI = stageData.stageUI;
+		else {
+			if (stageData.isPixelStage)
+				stageUI = "pixel";
+		}
+		
 		BF_X = stageData.boyfriend[0];
 		BF_Y = stageData.boyfriend[1];
 		GF_X = stageData.girlfriend[0];
@@ -471,12 +478,9 @@ class PlayState extends MusicBeatState
 			timeTxt.y += 3;
 		}
 
-		if(ClientPrefs.data.splashSkin != 'Disabled')
-		{
-			var splash:NoteSplash = new NoteSplash(100, 100);
-			grpNoteSplashes.add(splash);
-			splash.alpha = 0.000001; //cant make it invisible or it won't allow precaching
-		}
+		var splash:NoteSplash = new NoteSplash(100, 100);
+		grpNoteSplashes.add(splash);
+		splash.alpha = 0.000001; //cant make it invisible or it won't allow precaching
 
 		opponentStrums = new FlxTypedGroup<StrumNote>();
 		playerStrums = new FlxTypedGroup<StrumNote>();
@@ -854,14 +858,14 @@ class PlayState extends MusicBeatState
 	function cacheCountdown()
 	{
 		var introAssets:Map<String, Array<String>> = new Map<String, Array<String>>();
-		introAssets.set('default', ['ready', 'set', 'go']);
-		introAssets.set('pixel', ['pixelUI/ready-pixel', 'pixelUI/set-pixel', 'pixelUI/date-pixel']);
-
-		var introAlts:Array<String> = introAssets.get('default');
-		if (isPixelStage) introAlts = introAssets.get('pixel');
-		
-		for (asset in introAlts)
-			Paths.image(asset);
+		var introImagesArray:Array<String> = switch(stageUI) {
+			case "pixel": ['${stageUI}UI/ready-pixel', '${stageUI}UI/set-pixel', '${stageUI}UI/date-pixel'];
+			case "normal": ["ready", "set" ,"go"];
+			default: ['${stageUI}UI/ready', '${stageUI}UI/set', '${stageUI}UI/go'];
+		}
+		introAssets.set(stageUI, introImagesArray);
+		var introAlts:Array<String> = introAssets.get(stageUI);
+		for (asset in introAlts) Paths.image(asset);
 		
 		Paths.sound('intro3' + introSoundsSuffix);
 		Paths.sound('intro2' + introSoundsSuffix);
@@ -922,17 +926,17 @@ class PlayState extends MusicBeatState
 					dad.dance();
 
 				var introAssets:Map<String, Array<String>> = new Map<String, Array<String>>();
-				introAssets.set('default', ['ready', 'set', 'go']);
-				introAssets.set('pixel', ['pixelUI/ready-pixel', 'pixelUI/set-pixel', 'pixelUI/date-pixel']);
-
-				var introAlts:Array<String> = introAssets.get('default');
-				var antialias:Bool = ClientPrefs.data.antialiasing;
-				if(isPixelStage) {
-					introAlts = introAssets.get('pixel');
-					antialias = false;
+				var introImagesArray:Array<String> = switch(stageUI) {
+					case "pixel": ['${stageUI}UI/ready-pixel', '${stageUI}UI/set-pixel', '${stageUI}UI/date-pixel'];
+					case "normal": ["ready", "set" ,"go"];
+					default: ['${stageUI}UI/ready', '${stageUI}UI/set', '${stageUI}UI/go'];
 				}
+				introAssets.set(stageUI, introImagesArray);
 
+				var introAlts:Array<String> = introAssets.get(stageUI);
+				var antialias:Bool = (ClientPrefs.data.antialiasing && !isPixelStage);
 				var tick:Countdown = THREE;
+
 				switch (swagCounter)
 				{
 					case 0:
@@ -2299,38 +2303,35 @@ class PlayState extends MusicBeatState
 	public var showComboNum:Bool = true;
 	public var showRating:Bool = true;
 
+	// stores the last judgement object
+	var lastRating:FlxSprite;
+	// stores the last combo sprite object
+	var lastCombo:FlxSprite;
+	// stores the last combo score objects in an array
+	var lastScore:Array<FlxSprite> = [];
+
 	private function cachePopUpScore()
 	{
-		var pixelShitPart1:String = '';
-		var pixelShitPart2:String = '';
-		if (isPixelStage)
+		var uiPrefix:String = '';
+		var uiSuffix:String = '';
+		if (stageUI != "normal")
 		{
-			pixelShitPart1 = 'pixelUI/';
-			pixelShitPart2 = '-pixel';
+			uiPrefix = '${stageUI}UI/';
+			if (PlayState.isPixelStage) uiSuffix = '-pixel';
 		}
 
 		for (rating in ratingsData)
-			Paths.image(pixelShitPart1 + rating.image + pixelShitPart2);
-
+			Paths.image(uiPrefix + rating.image + uiSuffix);
 		for (i in 0...10)
-			Paths.image(pixelShitPart1 + 'num' + i + pixelShitPart2);
+			Paths.image(uiPrefix + 'num' + i + uiSuffix);
 	}
 
 	private function popUpScore(note:Note = null):Void
 	{
 		var noteDiff:Float = Math.abs(note.strumTime - Conductor.songPosition + ClientPrefs.data.ratingOffset);
-		//trace(noteDiff, ' ' + Math.abs(note.strumTime - Conductor.songPosition));
-
-		// boyfriend.playAnim('hey');
 		vocals.volume = 1;
 
-		var placement:String = Std.string(combo);
-
-		var coolText:FlxText = new FlxText(0, 0, 0, placement, 32);
-		coolText.screenCenter();
-		coolText.x = FlxG.width * 0.35;
-		//
-
+		var placement:Float =  FlxG.width * 0.35;
 		var rating:FlxSprite = new FlxSprite();
 		var score:Int = 350;
 
@@ -2356,21 +2357,21 @@ class PlayState extends MusicBeatState
 			}
 		}
 
-		var pixelShitPart1:String = "";
-		var pixelShitPart2:String = '';
+		var uiPrefix:String = "";
+		var uiSuffix:String = '';
 		var antialias:Bool = ClientPrefs.data.antialiasing;
 
-		if (isPixelStage)
+		if (stageUI != "normal")
 		{
-			pixelShitPart1 = 'pixelUI/';
-			pixelShitPart2 = '-pixel';
-			antialias = false;
+			uiPrefix = '${stageUI}UI/';
+			if (PlayState.isPixelStage) uiSuffix = '-pixel';
+			antialias = !isPixelStage;
 		}
 
-		rating.loadGraphic(Paths.image(pixelShitPart1 + daRating.image + pixelShitPart2));
+		rating.loadGraphic(Paths.image(uiPrefix + daRating.image + uiSuffix));
 		rating.cameras = [camHUD];
 		rating.screenCenter();
-		rating.x = coolText.x - 40;
+		rating.x = placement - 40;
 		rating.y -= 60;
 		rating.acceleration.y = 550 * playbackRate * playbackRate;
 		rating.velocity.y -= FlxG.random.int(140, 175) * playbackRate;
@@ -2380,10 +2381,10 @@ class PlayState extends MusicBeatState
 		rating.y -= ClientPrefs.data.comboOffset[1];
 		rating.antialiasing = antialias;
 
-		var comboSpr:FlxSprite = new FlxSprite().loadGraphic(Paths.image(pixelShitPart1 + 'combo' + pixelShitPart2));
+		var comboSpr:FlxSprite = new FlxSprite().loadGraphic(Paths.image(uiPrefix + 'combo' + uiSuffix));
 		comboSpr.cameras = [camHUD];
 		comboSpr.screenCenter();
-		comboSpr.x = coolText.x;
+		comboSpr.x = placement;
 		comboSpr.acceleration.y = FlxG.random.int(200, 300) * playbackRate * playbackRate;
 		comboSpr.velocity.y -= FlxG.random.int(140, 160) * playbackRate;
 		comboSpr.visible = (!ClientPrefs.data.hideHud && showCombo);
@@ -2446,10 +2447,10 @@ class PlayState extends MusicBeatState
 		}
 		for (i in seperatedScore)
 		{
-			var numScore:FlxSprite = new FlxSprite().loadGraphic(Paths.image(pixelShitPart1 + 'num' + Std.int(i) + pixelShitPart2));
+			var numScore:FlxSprite = new FlxSprite().loadGraphic(Paths.image(uiPrefix + 'num' + Std.int(i) + uiSuffix));
 			numScore.cameras = [camHUD];
 			numScore.screenCenter();
-			numScore.x = coolText.x + (43 * daLoop) - 90 + ClientPrefs.data.comboOffset[2];
+			numScore.x = placement + (43 * daLoop) - 90 + ClientPrefs.data.comboOffset[2];
 			numScore.y += 80 - ClientPrefs.data.comboOffset[3];
 			numScore.antialiasing = antialias;
 			
@@ -2482,14 +2483,6 @@ class PlayState extends MusicBeatState
 			if(numScore.x > xThing) xThing = numScore.x;
 		}
 		comboSpr.x = xThing + 50;
-		/*
-			trace(combo);
-			trace(seperatedScore);
-		 */
-
-		coolText.text = Std.string(seperatedScore);
-		// add(coolText);
-
 		FlxTween.tween(rating, {alpha: 0}, 0.2 / playbackRate, {
 			startDelay: Conductor.crochet * 0.001 / playbackRate
 		});
@@ -2497,9 +2490,7 @@ class PlayState extends MusicBeatState
 		FlxTween.tween(comboSpr, {alpha: 0}, 0.2 / playbackRate, {
 			onComplete: function(tween:FlxTween)
 			{
-				coolText.destroy();
 				comboSpr.destroy();
-
 				rating.destroy();
 			},
 			startDelay: Conductor.crochet * 0.002 / playbackRate
@@ -2511,8 +2502,6 @@ class PlayState extends MusicBeatState
 	{
 		var eventKey:FlxKey = event.keyCode;
 		var key:Int = getKeyFromEvent(keysArray, eventKey);
-		//trace('Pressed: ' + eventKey);
-
 		if (!controls.controllerMode && FlxG.keys.checkStatus(eventKey, JUST_PRESSED)) keyPressed(key);
 	}
 
@@ -2910,7 +2899,7 @@ class PlayState extends MusicBeatState
 	}
 
 	public function spawnNoteSplashOnNote(note:Note) {
-		if(ClientPrefs.data.splashSkin != 'Disabled' && note != null) {
+		if(note != null) {
 			var strum:StrumNote = playerStrums.members[note.noteData];
 			if(strum != null)
 				spawnNoteSplash(strum.x, strum.y, note.noteData, note);
@@ -2924,7 +2913,8 @@ class PlayState extends MusicBeatState
 	}
 
 	override function destroy() {
-		for (lua in luaArray) {
+		for (i in 0...luaArray.length) {
+			var lua:FunkinLua = luaArray[0];
 			lua.call('onDestroy', []);
 			lua.stop();
 		}
@@ -3064,9 +3054,16 @@ class PlayState extends MusicBeatState
 		if(excludeValues == null) excludeValues = [];
 		excludeValues.push(FunkinLua.Function_Continue);
 
-		for (script in luaArray) {
+		var len:Int = luaArray.length;
+		var i:Int = 0;
+		while(i < len)
+		{
+			var script:FunkinLua = luaArray[i];
 			if(exclusions.contains(script.scriptName))
+			{
+				i++;
 				continue;
+			}
 
 			var myValue:Dynamic = script.call(funcToCall, args);
 			if(myValue == FunkinLua.Function_StopLua && !ignoreStops)
@@ -3074,6 +3071,9 @@ class PlayState extends MusicBeatState
 			
 			if(myValue != null && !excludeValues.contains(myValue))
 				returnVal = myValue;
+
+			if(!script.closed) i++;
+			else len--;
 		}
 		#end
 		return returnVal;
